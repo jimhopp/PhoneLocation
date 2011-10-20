@@ -54,9 +54,9 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content">
 		<TextView android:layout_height="wrap_content" android:text="@string/gps_time_lbl"
 			android:layout_width="wrap_content" />
-		<TextView android:layout_width="match_parent"
+		<TextView android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:id="@+id/time"
-			android:text="@string/gps_pending" />
+			android:text="@string/gps_pending" />	
 	</LinearLayout>
 	<LinearLayout android:orientation="horizontal"
 		android:layout_width="fill_parent" android:layout_height="wrap_content">
@@ -64,6 +64,78 @@
 			android:layout_width="wrap_content" />
 		<TextView android:layout_width="match_parent"
 			android:layout_height="wrap_content" android:id="@+id/provider"
+			android:text="@string/gps_pending" />
+	</LinearLayout>
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<TextView android:layout_height="wrap_content" android:text="@string/networkactive"
+			android:layout_width="wrap_content" />
+		<TextView android:layout_width="match_parent"
+			android:layout_height="wrap_content" android:id="@+id/statusN"
+			android:text="@string/gps_pending" />
+	</LinearLayout>
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<TextView android:layout_height="wrap_content" android:text="@string/distancebwtn"
+			android:layout_width="wrap_content" />
+		<TextView android:layout_width="match_parent"
+			android:layout_height="wrap_content" android:id="@+id/distance"
+			android:text="@string/gps_pending" />
+	</LinearLayout>
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<TextView android:layout_height="wrap_content" android:text="@string/gps_long_lbl"
+			android:layout_width="wrap_content" />
+		<TextView android:layout_width="match_parent"
+			android:layout_height="wrap_content" android:id="@+id/longitudeN"
+			android:text="@string/gps_pending" />
+	</LinearLayout>
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<TextView android:layout_height="wrap_content" android:text="@string/gps_lat_lbl"
+			android:layout_width="wrap_content" />
+		<TextView android:layout_width="match_parent"
+			android:layout_height="wrap_content" android:id="@+id/latitudeN"
+			android:text="@string/gps_pending" />
+	</LinearLayout>
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<TextView android:layout_height="wrap_content" android:text="@string/gps_alt_lbl"
+			android:layout_width="wrap_content" />
+		<TextView android:layout_width="match_parent"
+			android:layout_height="wrap_content" android:id="@+id/altitudeN"
+			android:text="@string/gps_pending" />
+	</LinearLayout>
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<TextView android:layout_height="wrap_content" android:text="@string/gps_accuracy_lbl"
+			android:layout_width="wrap_content" />
+		<TextView android:layout_width="match_parent"
+			android:layout_height="wrap_content" android:id="@+id/accuracyN"
+			android:text="@string/gps_pending" />
+	</LinearLayout>
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<TextView android:layout_height="wrap_content" android:text="@string/gps_speed_lbl"
+			android:layout_width="wrap_content" />
+		<TextView android:layout_width="match_parent"
+			android:layout_height="wrap_content" android:id="@+id/speedN"
+			android:text="@string/gps_pending" />
+	</LinearLayout>
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<TextView android:layout_height="wrap_content" android:text="@string/gps_time_lbl"
+			android:layout_width="wrap_content" />
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:id="@+id/timeN"
+			android:text="@string/gps_pending" />
+	</LinearLayout>
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<TextView android:layout_height="wrap_content" android:text="@string/gps_provider_lbl"
+			android:layout_width="wrap_content" />
+		<TextView android:layout_width="match_parent"
+			android:layout_height="wrap_content" android:id="@+id/providerN"
 			android:text="@string/gps_pending" />
 	</LinearLayout>
 </LinearLayout>

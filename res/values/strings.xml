@@ -8,6 +8,8 @@
     <string name="gps_alt_lbl">altitude:</string>
     <string name="gps_accuracy_lbl">accuracy(m):</string>
     <string name="gps_speed_lbl">speed(m/s):</string>
-    <string name="gps_time_lbl">time:</string>
+    <string name="gps_time_lbl">time/age:</string>
     <string name="gps_provider_lbl">provider:</string>
+    <string name="networkactive">network status:</string>
+    <string name="distancebwtn">distance between gps &amp; network:</string>
 </resources>
