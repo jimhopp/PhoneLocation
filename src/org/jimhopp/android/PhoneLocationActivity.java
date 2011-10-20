@@ -30,7 +30,7 @@ public class PhoneLocationActivity extends Activity {
 
 	
 	void updateGPS(Location loc) {
-	    lastKnownGPS = loc;
+	    lastKnownGPS = loc; //should i make a copy of this?
 		latG.setText(String.valueOf(loc.getLatitude()));
         lonG.setText(String.valueOf(loc.getLongitude()));
         altG.setText(loc.hasAltitude() ? String.valueOf(loc.getAltitude()) : "n/a");
