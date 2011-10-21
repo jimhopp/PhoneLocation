@@ -41,9 +41,8 @@ public class PhoneLocationActivity extends Activity {
     	tm.set(loc.getTime());
 	   	Time now = new Time();
 	   	now.setToNow();
-	   	long delta = now.normalize(true) - tm.normalize(true);
-        timeG.setText(tm.format("%H:%M:%S") + " / " + 
-    			DateUtils.formatElapsedTime(delta) + " / " + String.valueOf(delta));
+	   	long delta = (now.normalize(true) - tm.normalize(true)) / 1000;
+        timeG.setText(tm.format("%H:%M:%S") + " / " + DateUtils.formatElapsedTime(delta));
     	updateDistance();
 	}
 	
@@ -69,9 +68,8 @@ public class PhoneLocationActivity extends Activity {
     	tm.set(loc.getTime());
     	Time now = new Time();
     	now.setToNow();
-    	long delta = now.normalize(true) - tm.normalize(true);
-    	timeN.setText(tm.format("%H:%M:%S") + " / " +
-    			DateUtils.formatElapsedTime(delta) + " / " + String.valueOf(delta));
+    	long delta = (now.normalize(true) - tm.normalize(true)) / 1000;
+    	timeN.setText(tm.format("%H:%M:%S") + " / " + DateUtils.formatElapsedTime(delta));
     	updateDistance();
 	}
 	
