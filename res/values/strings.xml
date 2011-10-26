@@ -12,4 +12,5 @@
     <string name="gps_provider_lbl">provider:</string>
     <string name="networkactive">network status:</string>
     <string name="distancebwtn">distance between gps &amp; network:</string>
+    <string name="time">time:</string>
 </resources>

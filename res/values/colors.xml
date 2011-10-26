@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources
-  xmlns:android="http://schemas.android.com/apk/res/android">
-  <drawable name="red">#ffff0000</drawable>
-  <drawable name="dk_grey">#666666</drawable>
-    
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+	<drawable name="red">#ffff0000</drawable>
+	<drawable name="green">#ff00ff00</drawable>
+	<drawable name="lt_grey">#dddddd</drawable>
+	<drawable name="grey">#999999</drawable>
+	<drawable name="dk_grey">#666666</drawable>
+    <drawable name="blue">#0000FF</drawable>
 </resources>

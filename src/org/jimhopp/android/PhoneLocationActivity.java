@@ -6,13 +6,43 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.format.DateUtils;
 import android.text.format.Time;
-import android.widget.EditText;
 import android.widget.TextView;
 
 
 public class PhoneLocationActivity extends Activity {
+	
+	private final class Timer implements Runnable {
+        TextView age;
+        
+        Timer(TextView age) {
+        	this.age = age;
+        }
+        private Handler handler = new Handler();
+        private Runnable updateAge = new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Time now = new Time();
+			   	now.setToNow();
+				age.setText(now.format("%H:%M:%S"));
+			}
+        	
+        };
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			while (true) {
+				handler.post(updateAge);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {}
+			}
+		}
+	}
 	
 	TextView latG, latN,
 	         lonG, lonN,
@@ -36,7 +66,8 @@ public class PhoneLocationActivity extends Activity {
         altG.setText(loc.hasAltitude() ? String.valueOf(loc.getAltitude()) : "n/a");
         accuracyG.setText(String.valueOf(loc.getAccuracy()));
         speedG.setText(loc.hasSpeed() ? String.valueOf(loc.getSpeed()) : "n/a");
-        providerG.setText(loc.getProvider());
+        providerG.setText(Thread.currentThread().getName()	 
+        		+ String.valueOf(Thread.currentThread().getId()));
         Time tm = new Time();
     	tm.set(loc.getTime());
 	   	Time now = new Time();
@@ -52,7 +83,8 @@ public class PhoneLocationActivity extends Activity {
         altG.setText(NO_LOC_DATA);
         accuracyG.setText(NO_LOC_DATA);
         speedG.setText(NO_LOC_DATA);
-        providerG.setText(NO_LOC_DATA);
+        providerG.setText(Thread.currentThread().getName()	 
+        		+ String.valueOf(Thread.currentThread().getId()));
         timeG.setText(NO_LOC_DATA);
         }
 	
@@ -112,6 +144,8 @@ public class PhoneLocationActivity extends Activity {
         speedN = (TextView)findViewById(R.id.speedN);
         providerN = (TextView)findViewById(R.id.providerN);
         distance = (TextView)findViewById(R.id.distance);
+        
+        new Thread(new Timer((TextView)findViewById(R.id.time))).start();
        
         LocationListener locationGPS = new LocationListener() {
 			@Override

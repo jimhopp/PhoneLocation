@@ -4,7 +4,15 @@
 	android:layout_height="fill_parent" android:weightSum="1">
 	<LinearLayout android:orientation="vertical"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:background="@drawable/red">
+		android:background="@drawable/blue">
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+			<TextView android:layout_height="wrap_content" android:text="@string/time"
+				android:layout_width="wrap_content" />
+			<TextView android:layout_width="match_parent"
+				android:layout_height="wrap_content" android:id="@+id/time"
+				android:text="@string/gps_pending" />
+		</LinearLayout>
 		<LinearLayout android:orientation="horizontal"
 			android:layout_width="fill_parent" android:layout_height="wrap_content">
 			<TextView android:layout_height="wrap_content" android:text="@string/gpsactive"
