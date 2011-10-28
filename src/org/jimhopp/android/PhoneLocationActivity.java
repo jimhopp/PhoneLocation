@@ -1,5 +1,7 @@
 package org.jimhopp.android;
 
+import org.jimhopp.android.model.PhoneLocationModel;
+
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
@@ -15,10 +17,10 @@ import android.widget.TextView;
 public class PhoneLocationActivity extends Activity {
 	
 	private final class Timer implements Runnable {
-        TextView age;
+        TextView time;
         
-        Timer(TextView age) {
-        	this.age = age;
+        Timer(TextView time) {
+        	this.time = time;
         }
         private Handler handler = new Handler();
         private Runnable updateAge = new Runnable() {
@@ -28,10 +30,15 @@ public class PhoneLocationActivity extends Activity {
 				// TODO Auto-generated method stub
 				Time now = new Time();
 			   	now.setToNow();
-				age.setText(now.format("%H:%M:%S"));
+		   		time.setText(now.format("%H:%M:%S"));
+		   		updateAge(model.getGPSLocation(), now, timeG);
+		   		updateAge(model.getNetworkLocation(), now, timeN);
+		   		updateDistance();
+		   		updateGPS(model.getGPSLocation());
+		   		updateNetwork(model.getNetworkLocation());
 			}
-        	
         };
+        
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
@@ -54,27 +61,39 @@ public class PhoneLocationActivity extends Activity {
 	         providerG, providerN,
 	         distance;
 	
-	Location lastKnownGPS, lastKnownNetwork;
+	PhoneLocationModel model;
 	
 	final String NO_LOC_DATA = "no location data";
 
+	void updateAge(Location loc, Time time, TextView textView) {
+		Time locTime = new Time();
+	   	long delta;
+	   	if (loc != null) {
+	   		locTime.set(loc.getTime());
+	   		delta = (time.normalize(true) - locTime.normalize(true)) / 1000;
+	   		textView.setText(locTime.format("%H:%M:%S") + " / " + DateUtils.formatElapsedTime(delta)+
+	   				Thread.currentThread().getName()	 
+	        		+ String.valueOf(Thread.currentThread().getId()));
+	   	}
+	   	else {
+	   		textView.setText("n/a " + Thread.currentThread().getName()	 
+	        		+ String.valueOf(Thread.currentThread().getId()));
+	   	}
+	}
 	
 	void updateGPS(Location loc) {
-	    lastKnownGPS = loc; //should i make a copy of this?
-		latG.setText(String.valueOf(loc.getLatitude()));
-        lonG.setText(String.valueOf(loc.getLongitude()));
-        altG.setText(loc.hasAltitude() ? String.valueOf(loc.getAltitude()) : "n/a");
-        accuracyG.setText(String.valueOf(loc.getAccuracy()));
-        speedG.setText(loc.hasSpeed() ? String.valueOf(loc.getSpeed()) : "n/a");
-        providerG.setText(Thread.currentThread().getName()	 
+		if (loc != null) {
+			latG.setText(String.valueOf(loc.getLatitude()));
+			lonG.setText(String.valueOf(loc.getLongitude()));
+			altG.setText(loc.hasAltitude() ? String.valueOf(loc.getAltitude()) : "n/a");
+			accuracyG.setText(String.valueOf(loc.getAccuracy()));
+			speedG.setText(loc.hasSpeed() ? String.valueOf(loc.getSpeed()) : "n/a");
+			providerG.setText(Thread.currentThread().getName()	 
         		+ String.valueOf(Thread.currentThread().getId()));
-        Time tm = new Time();
-    	tm.set(loc.getTime());
-	   	Time now = new Time();
-	   	now.setToNow();
-	   	long delta = (now.normalize(true) - tm.normalize(true)) / 1000;
-        timeG.setText(tm.format("%H:%M:%S") + " / " + DateUtils.formatElapsedTime(delta));
-    	updateDistance();
+		}
+		else {
+			updateGPSUnknown();
+		}
 	}
 	
 	void updateGPSUnknown() {
@@ -85,24 +104,20 @@ public class PhoneLocationActivity extends Activity {
         speedG.setText(NO_LOC_DATA);
         providerG.setText(Thread.currentThread().getName()	 
         		+ String.valueOf(Thread.currentThread().getId()));
-        timeG.setText(NO_LOC_DATA);
         }
 	
 	void updateNetwork(Location loc) {
-        lastKnownNetwork = loc;
-		latN.setText(String.valueOf(loc.getLatitude()));
-        lonN.setText(String.valueOf(loc.getLongitude()));
-        altN.setText(loc.hasAltitude() ? String.valueOf(loc.getAltitude()) : "n/a");
-        accuracyN.setText(String.valueOf(loc.getAccuracy()));
-        speedN.setText(loc.hasSpeed() ? String.valueOf(loc.getSpeed()) : "n/a");
-        providerN.setText(loc.getProvider());
-        Time tm = new Time();
-    	tm.set(loc.getTime());
-    	Time now = new Time();
-    	now.setToNow();
-    	long delta = (now.normalize(true) - tm.normalize(true)) / 1000;
-    	timeN.setText(tm.format("%H:%M:%S") + " / " + DateUtils.formatElapsedTime(delta));
-    	updateDistance();
+		if (loc != null) {
+			latN.setText(String.valueOf(loc.getLatitude()));
+			lonN.setText(String.valueOf(loc.getLongitude()));
+			altN.setText(loc.hasAltitude() ? String.valueOf(loc.getAltitude()) : "n/a");
+			accuracyN.setText(String.valueOf(loc.getAccuracy()));
+			speedN.setText(loc.hasSpeed() ? String.valueOf(loc.getSpeed()) : "n/a");
+			providerN.setText(loc.getProvider());
+		}
+		else{
+			updateNetworkUnknown();
+		}
 	}
 	
 	void updateNetworkUnknown() {
@@ -116,8 +131,8 @@ public class PhoneLocationActivity extends Activity {
         }
 
 	void updateDistance() {
-    	if (lastKnownGPS != null && lastKnownNetwork != null)
-    		distance.setText(String.valueOf(lastKnownGPS.distanceTo(lastKnownNetwork)));
+    	if (model.getGPSLocation() != null && model.getNetworkLocation() != null)
+    		distance.setText(String.valueOf(model.getGPSLocation().distanceTo(model.getNetworkLocation())));
 	}
 	
     /** Called when the activity is first created. */
@@ -145,60 +160,9 @@ public class PhoneLocationActivity extends Activity {
         providerN = (TextView)findViewById(R.id.providerN);
         distance = (TextView)findViewById(R.id.distance);
         
-        new Thread(new Timer((TextView)findViewById(R.id.time))).start();
-       
-        LocationListener locationGPS = new LocationListener() {
-			@Override
-			public void onLocationChanged(Location location) { updateGPS(location); }
-			@Override
-			public void onProviderDisabled(String providerName) { 
-				statusG.setText("Provider "+ providerName + " disabled");
-			}
-			@Override
-			public void onProviderEnabled(String providerName) {
-				statusG.setText("Provider "+ providerName + " enabled");
-			}
-			@Override
-			public void onStatusChanged(String providerName, int providerStatus,
-					Bundle extras) {
-				statusG.setText("Provider "+ providerName + " has status " + providerStatus);
-			}
-        };
-
-        LocationListener locationNetwork = new LocationListener() {
-			@Override
-			public void onLocationChanged(Location location) { updateNetwork(location); }
-			@Override
-			public void onProviderDisabled(String providerName) { 
-				statusN.setText("Provider "+ providerName + " disabled");
-			}
-			@Override
-			public void onProviderEnabled(String providerName) {
-				statusN.setText("Provider "+ providerName + " enabled");
-			}
-			@Override
-			public void onStatusChanged(String providerName, int providerStatus,
-					Bundle extras) {
-				statusN.setText("Provider "+ providerName + " has status " + providerStatus);
-			}
-        };
-        
+        new Thread(new Timer((TextView)findViewById(R.id.clock))).start();
+               
         LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        
-        lastKnownGPS = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        if (lastKnownGPS != null) { updateGPS(lastKnownGPS); }
-        else { updateGPSUnknown(); }
-       
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000l, Float.valueOf("50.0"),
-        	locationGPS);
-        
-        lastKnownNetwork = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-        if (lastKnownNetwork != null) { updateNetwork(lastKnownNetwork); }
-        else { updateNetworkUnknown(); }
-       
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 30000l, Float.valueOf("50.0"),
-        	locationNetwork);
+        model = new PhoneLocationModel(lm);
     }
 }
