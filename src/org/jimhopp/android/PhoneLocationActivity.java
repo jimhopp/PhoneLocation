@@ -18,16 +18,17 @@ public class PhoneLocationActivity extends Activity {
 	
 	private final class Timer implements Runnable {
         TextView time;
+        boolean done;
         
         Timer(TextView time) {
         	this.time = time;
+        	done = false;
         }
         private Handler handler = new Handler();
         private Runnable updateAge = new Runnable() {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				Time now = new Time();
 			   	now.setToNow();
 		   		time.setText(now.format("%H:%M:%S"));
@@ -39,10 +40,10 @@ public class PhoneLocationActivity extends Activity {
 			}
         };
         
+        public void done() { done = true; }
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
-			while (true) {
+			while (!done) {
 				handler.post(updateAge);
 				try {
 					Thread.sleep(1000);
@@ -64,6 +65,8 @@ public class PhoneLocationActivity extends Activity {
 	PhoneLocationModel model;
 	
 	final String NO_LOC_DATA = "no location data";
+	
+	Timer clock;
 
 	void updateAge(Location loc, Time time, TextView textView) {
 		Time locTime = new Time();
@@ -160,9 +163,14 @@ public class PhoneLocationActivity extends Activity {
         providerN = (TextView)findViewById(R.id.providerN);
         distance = (TextView)findViewById(R.id.distance);
         
-        new Thread(new Timer((TextView)findViewById(R.id.clock))).start();
+        clock = new Timer((TextView)findViewById(R.id.clock));
+        new Thread(clock).start();
                
         LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         model = new PhoneLocationModel(lm);
+    }
+    public void onDestroy() {
+    	super.onDestroy();
+    	clock.done();
     }
 }
