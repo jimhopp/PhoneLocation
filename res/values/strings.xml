@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="gpsactive">gps status</string>
+    <string name="gpsactive">status</string>
     <string name="app_name">PhoneLocation</string>
     <string name="gps_long_lbl">longitude:</string>
     <string name="gps_pending">(Pending)</string>
@@ -8,7 +8,7 @@
     <string name="gps_alt_lbl">altitude:</string>
     <string name="gps_accuracy_lbl">accuracy(m):</string>
     <string name="gps_speed_lbl">speed(m/s):</string>
-    <string name="gps_time_lbl">time/age:</string>
+    <string name="gps_age_lbl">age:</string>
     <string name="gps_provider_lbl">provider:</string>
     <string name="networkactive">network status:</string>
     <string name="distancebwtn">distance between gps &amp; network:</string>

@@ -5,13 +5,15 @@ import org.jimhopp.android.model.PhoneLocationModel;
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.format.DateUtils;
 import android.text.format.Time;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class PhoneLocationActivity extends Activity {
@@ -32,8 +34,8 @@ public class PhoneLocationActivity extends Activity {
 				Time now = new Time();
 			   	now.setToNow();
 		   		time.setText(now.format("%H:%M:%S"));
-		   		updateAge(model.getGPSLocation(), now, timeG);
-		   		updateAge(model.getNetworkLocation(), now, timeN);
+		   		updateAge(model.getGPSLocation(), now, ageG);
+		   		updateAge(model.getNetworkLocation(), now, ageN);
 		   		updateDistance();
 		   		updateGPS(model.getGPSLocation());
 		   		updateNetwork(model.getNetworkLocation());
@@ -57,7 +59,7 @@ public class PhoneLocationActivity extends Activity {
 	         altG, altN,
 	         accuracyG, accuracyN,
 	         statusG, statusN,
-	         timeG, timeN,
+	         ageG, ageN,
 	         speedG, speedN,
 	         providerG, providerN,
 	         distance;
@@ -74,7 +76,7 @@ public class PhoneLocationActivity extends Activity {
 	   	if (loc != null) {
 	   		locTime.set(loc.getTime());
 	   		delta = (time.normalize(true) - locTime.normalize(true)) / 1000;
-	   		textView.setText(locTime.format("%H:%M:%S") + " / " + DateUtils.formatElapsedTime(delta)+
+	   		textView.setText(DateUtils.formatElapsedTime(delta)+
 	   				Thread.currentThread().getName()	 
 	        		+ String.valueOf(Thread.currentThread().getId()));
 	   	}
@@ -130,7 +132,7 @@ public class PhoneLocationActivity extends Activity {
         accuracyN.setText(NO_LOC_DATA);
         speedN.setText(NO_LOC_DATA);
         providerN.setText(NO_LOC_DATA);
-        timeN.setText(NO_LOC_DATA);
+        ageN.setText(NO_LOC_DATA);
         }
 
 	void updateDistance() {
@@ -149,7 +151,7 @@ public class PhoneLocationActivity extends Activity {
         altG = (TextView)findViewById(R.id.altitude);
         accuracyG = (TextView)findViewById(R.id.accuracy);
         statusG = (TextView)findViewById(R.id.status);
-        timeG = (TextView)findViewById(R.id.time);
+        ageG = (TextView)findViewById(R.id.age);
         speedG = (TextView)findViewById(R.id.speed);
         providerG = (TextView)findViewById(R.id.provider);
         
@@ -158,7 +160,7 @@ public class PhoneLocationActivity extends Activity {
         altN = (TextView)findViewById(R.id.altitudeN);
         accuracyN = (TextView)findViewById(R.id.accuracyN);
         statusN = (TextView)findViewById(R.id.statusN);
-        timeN = (TextView)findViewById(R.id.timeN);
+        ageN = (TextView)findViewById(R.id.ageN);
         speedN = (TextView)findViewById(R.id.speedN);
         providerN = (TextView)findViewById(R.id.providerN);
         distance = (TextView)findViewById(R.id.distance);
@@ -173,4 +175,35 @@ public class PhoneLocationActivity extends Activity {
     	super.onDestroy();
     	clock.done();
     }
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+	    menu.add(Menu.NONE, 1, Menu.NONE, "Email Location").setAlphabeticShortcut('e');
+	    menu.add(Menu.NONE, 2, Menu.NONE, "Exit").setAlphabeticShortcut('x');
+	    return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch (item.getItemId()) {
+		case 1:
+			Location loc = model.getGPSLocation();
+			String text = "Email loc " + (loc != null ? loc.getLatitude() : -999)
+			  + (loc != null ? loc.getLongitude() : -999);
+			Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+			toast.show();			
+			return true;
+			
+		case 2: 
+			finish();
+			return true;
+
+		default:
+				break;
+		}
+		return false;
+	}
 }
