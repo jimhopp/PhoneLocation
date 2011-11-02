@@ -4,8 +4,11 @@ import org.jimhopp.android.model.PhoneLocationModel;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.format.DateUtils;
@@ -190,11 +193,26 @@ public class PhoneLocationActivity extends Activity {
 		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
 		case 1:
-			Location loc = model.getGPSLocation();
-			String text = "Email loc " + (loc != null ? loc.getLatitude() : -999)
-			  + (loc != null ? loc.getLongitude() : -999);
-			Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-			toast.show();			
+			Location locG = model.getGPSLocation();
+			Location locN = model.getNetworkLocation();
+			String text = "My current locations:\n" +
+					"GPS    : "	+ (locG != null ? locG.getLatitude() : -999)
+			            + ", " + (locG != null ? locG.getLongitude() : -999) + "\n" +
+			        "Network: "	+ (locN != null ? locN.getLatitude() : -999)
+			            + ", " + (locN != null ? locN.getLongitude() : -999);
+			Uri addr = Uri.fromParts("mailto", "jimhopp@gmail.com", null);
+			Intent email = new Intent(Intent.ACTION_SENDTO, addr);
+			email.putExtra(Intent.EXTRA_TEXT, text);
+			email.putExtra(Intent.EXTRA_SUBJECT, "my location");
+			PackageManager pm = getPackageManager();
+			if (pm.resolveActivity(email, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+				startActivity(email);
+			}
+			else {
+				Toast toast = Toast.makeText(this, "Sorry, email not configured on this device",
+						Toast.LENGTH_SHORT);
+				toast.show();			
+			}
 			return true;
 			
 		case 2: 
