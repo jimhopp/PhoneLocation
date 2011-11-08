@@ -1,5 +1,8 @@
 package org.jimhopp.android;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import org.jimhopp.android.model.PhoneLocationModel;
 
 import android.app.Activity;
@@ -195,14 +198,35 @@ public class PhoneLocationActivity extends Activity {
 		case 1:
 			Location locG = model.getGPSLocation();
 			Location locN = model.getNetworkLocation();
-			String text = "My current locations:\n" +
-					"GPS    : "	+ (locG != null ? locG.getLatitude() : -999)
-			            + ", " + (locG != null ? locG.getLongitude() : -999) + "\n" +
-			        "Network: "	+ (locN != null ? locN.getLatitude() : -999)
-			            + ", " + (locN != null ? locN.getLongitude() : -999);
+			String body;
+			if (locG != null && locN != null) {
+				String text = "My current locations:\n" +
+						"GPS    : "	+ (locG != null ? locG.getLatitude() : -999)
+						+ ", " + (locG != null ? locG.getLongitude() : -999) + "\n" 
+						+ "Network: "	+ (locN != null ? locN.getLatitude() : -999)
+						+ ", " + (locN != null ? locN.getLongitude() : -999);
+				String qmap_link;
+				try {
+					String query_string = "size=512x512"
+					     + "&markers=" 
+						 + URLEncoder.encode("color:blue|label:G|" 
+					             + locG.getLatitude() + "," + locG.getLongitude(), "UTF-8")
+					     + "&markers="
+					     + URLEncoder.encode("color:green|label:N|" 
+					             + locN.getLatitude() + "," + locN.getLongitude(), "UTF-8")
+					     + "&sensor=true";
+					qmap_link = "http://maps.googleapis.com/maps/api/staticmap?" + query_string;
+				} catch (UnsupportedEncodingException e) {
+					qmap_link = e.getMessage();
+				}
+				body = text + "\n " + qmap_link;
+			}
+			else {
+				body = "(location unknown!)";
+			}			
 			Uri addr = Uri.fromParts("mailto", "jimhopp@gmail.com", null);
 			Intent email = new Intent(Intent.ACTION_SENDTO, addr);
-			email.putExtra(Intent.EXTRA_TEXT, text);
+			email.putExtra(Intent.EXTRA_TEXT, body);
 			email.putExtra(Intent.EXTRA_SUBJECT, "my location");
 			PackageManager pm = getPackageManager();
 			if (pm.resolveActivity(email, PackageManager.MATCH_DEFAULT_ONLY) != null) {
